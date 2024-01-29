@@ -1,0 +1,82 @@
+
+
+#gjs {
+  border: 10px solid #444;
+  background-color: rgb(190, 219, 219);
+}
+body {  
+  background-color:#4f394a !important;
+}
+/* Reset some default styling */
+.gjs-cv-canvas {
+  top: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.gjs-block {
+  width: auto;
+  height: auto;
+  min-height: auto;
+}
+
+.panel__top {
+  padding: 0;
+  width: auto;
+  display:inline;
+  position: initial;
+  justify-content: center;
+  justify-content: space-between;
+}
+.panel__basic-actions {
+  position: initial;
+  display:flow-root
+}
+
+.editor-row {
+  display: flex;
+  justify-content: flex-start;
+  align-items: stretch;
+  flex-wrap: nowrap;
+  height: auto;
+}
+
+.editor-canvas {
+  flex-grow: 1;
+  height:100vh;
+}
+
+.panel__right {
+  flex-basis: 300px;
+  position: relative;
+  overflow-y: auto;
+  /* background-color: bisque; */
+  text-decoration: dotted;
+  text-decoration-color: black;
+  align-items: end;
+}
+
+.panel__switcher {
+  position: initial;
+  display:flow-root;
+}
+
+
+:root {
+--gjs-primary-color: #4f394a;
+--gjs-secondary-color: rgba(120, 176, 193, 0.7);
+--gjs-tertiary-color: #f6f2f4;
+--gjs-quaternary-color: #f8f1f4;
+}
+
+
+.gjs-blocks-c {
+  display: flow-root;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  /* height:100vh; */
+}
+
+.btn{
+color: rgba(72, 185, 219, 0.7) !important;
+}
