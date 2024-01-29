@@ -6,7 +6,9 @@ const bcrypt = require('bcrypt');
 require('dotenv/config');
 const GrapesJsProject = require('../Modules/GrapesJsProject')
 
-
+const redis = require('redis');
+const client = redis.createClient();
+client.connect().then(()=>{console.log("connected");}).catch((e)=>console.error(e));
 
 router.post('/signup',async(req,res)=>{
 
@@ -92,13 +94,32 @@ router.get('/projects/:id',async(req,res)=>{
     try {
         console.log("req.params" , req.params);
         const { id } = req.params;
-        const project = await GrapesJsProject.findOne({ id });
-        console.log(project);
-        if (project) {
-          res.json({ data: project.data });
-        } else {
-          res.status(404).json({ error: 'Project not found' });
-        }
+
+
+        client.get(id, async(err,data)=>{
+            if(err){
+                console.log(err);
+                res.status(500).send('Internal Server error');
+            }
+            else if(data){
+                res.json(JSON.parse(data));
+            }
+            else{
+                try{
+                const project = await GrapesJsProject.findOne({ id });
+                console.log(project);
+                if (project) {
+                  res.json({ data: project.data });
+                } else {
+                  res.status(404).json({ error: 'Project not found' });
+                }
+            }
+            catch(error){
+                console.log("this is internal error ",error);
+            }
+            }
+        })
+        
       } catch (error) {
         res.status(500).json({ error: 'Internal Server Error' });
       }
@@ -117,9 +138,17 @@ router.patch('/projects/:id',async(req,res)=>{
           { data },
           { upsert: true, new: true }
         );
+        if(result.nModified>0){
+            client.set(id,JSON.stringify(data));
+            res.json({ data: result.data });
+            res.send("the data update successfully ");
+        }
+        else{
+            res.status(400).send('Page not found');
+        }
         console.log(result);
   
-        res.json({ data: result.data });
+        
       } catch (error) {
         res.status(500).json({ error: 'Internal Server Error' });
       }

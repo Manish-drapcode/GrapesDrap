@@ -3,22 +3,21 @@ import axios from 'axios';
 import 'grapesjs/dist/css/grapes.min.css';
 import grapesjs from 'grapesjs';
 import './dashboard.css';
-// In your component file (e.g., MyComponent.js)
+
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 class Dashboard extends Component {
   constructor(props) {
     super(props);
-    // this.editor=null;
+     this.editor=null;
     this.state={isMounted:false};
 
   }
   componentDidMount(event) {
-    if(!this.state.isMounted){
+   
       this.initGrapesJs();
-      this.setState({isMounted:true});
-    }
+    
     
   }
  
@@ -30,10 +29,10 @@ const projectEndpoint = `http://localhost:3003/user/projects/${projectID}`;
 const editor = grapesjs.init({
   container: '#gjs',
   fromElement: false,
-  components: `<h1 align='center' >Drap Code!</h1>`,
+  components: `<h1 align='center' > Drap Code!</h1>`,
   height: '100vh',
   width: 'auto',
-  storageManager: false,
+
   //this is block area scope
   blockManager: {
     appendTo: '#blocks',
