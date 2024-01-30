@@ -13,7 +13,7 @@ class App extends Component{
    return (<div className="App">
       <header className="App-header">
         <Routes>
-          <Route path="/" element={<Login history={this.props.history} />} />
+          <Route path="/" element={<Login/>} />
         
         <Route path="/Signup" element={<Signup></Signup>}  />.
         <Route path="/dashboard" element={<Dashboard></Dashboard>}  />

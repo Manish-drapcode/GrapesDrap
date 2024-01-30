@@ -10,7 +10,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 class Dashboard extends Component {
   constructor(props) {
     super(props);
-     this.editor=null;
+      this.editor=null;
     this.state={isMounted:false};
 
   }
@@ -30,6 +30,7 @@ const editor = grapesjs.init({
   container: '#gjs',
   fromElement: false,
   components: `<h1 align='center' > Drap Code!</h1>`,
+plugins:['gjs-preset-webpage'],
   height: '100vh',
   width: 'auto',
 

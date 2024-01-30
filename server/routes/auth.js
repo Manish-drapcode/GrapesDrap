@@ -100,7 +100,7 @@ router.get('/projects/:id', async (req, res) => {
   const projectKey= `project:${id}`
   const redisData = JSON.parse(await client.get(projectKey));
      if (redisData) {
-          console.log("Data from Redis:", data);
+          //console.log("Data from Redis:", data);
           res.send(redisData);
         } else {
           console.log(id, "this is data of else block");

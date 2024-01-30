@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 
 // Define the schema for GrapesJS project
 const grapesJSSchema = new mongoose.Schema({
+ 
   id: {
     type: Number,
     required: true,

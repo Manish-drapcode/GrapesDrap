@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import axios from 'axios';
-import {Link} from 'react-router-dom';
+import {Link,withRouter} from 'react-router-dom';
 import {Navigate} from 'react-router-dom';
 import './LS.css';
 class Login extends Component{
@@ -13,8 +13,6 @@ this.state={
     log:true,
 };
 }
-
-
 handleChange=(event)=>{
     console.log(this.props);
     const {name,value} = event.target;
@@ -32,8 +30,8 @@ userpassword:this.state.password,
         const response = await axios.get(url,{params:data});
         
         if(response){
-            localStorage.setItem('user', JSON.stringify(response.data));
-            console.log(response.data);
+            const Id = response.data._id;
+            localStorage.setItem(Id, JSON.stringify(response.data));
             this.props.history.push('/dashboard');
         }
     }
