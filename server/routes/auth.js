@@ -8,7 +8,7 @@ const GrapesJsProject = require('../Modules/GrapesJsProject')
 
 const redis = require('redis');
 const client = redis.createClient();
-client.connect().then(()=>{console.log("connected");}).catch((e)=>console.error(e));
+client.connect().then(()=>{console.log("connected-redis");}).catch((e)=>console.error(e));
 
 router.post('/signup',async(req,res)=>{
 
@@ -49,13 +49,16 @@ router.get('/login',async(req,res)=>{
         
             const details = await user.findOne({name:req.query.username});
             console.log(details);
-            console.log("request body for login:",req.query);
+            const data ={
+                name:details.name,
+                email:details.email,
+            }
             const match = await bcrypt.compare(req.query.userpassword,details.password);
             console.log(process.env.TOKEN_SECRET);
-            const accessToken = jwt.sign(JSON.stringify(details),process.env.TOKEN_SECRET);
-    
+            const accessToken = jwt.sign(JSON.stringify(data),process.env.TOKEN_SECRET);
+            console.log("access token",accessToken);
             if(match){
-            res.status(200).send({message:"Successfull"})
+            res.status(200).send({message:"Successfull",AccessToken:accessToken})
             }
             else{
                 res.json({message:"invalid credentials"});
@@ -89,41 +92,40 @@ res.status(200).send({message:"sucessfull"})
 
 
 // Endpoint to handle GrapesJS project storage
-
-router.get('/projects/:id',async(req,res)=>{
+router.get('/projects/:id', async (req, res) => {
     try {
-        console.log("req.params" , req.params);
-        const { id } = req.params;
+      console.log("req.params", req.params);
+      const  id  = req.params;
+  console.log("id:",id)
+  const projectKey= `project:${id}`
+  const redisData = JSON.parse(await client.get(projectKey));
+     if (redisData) {
+          console.log("Data from Redis:", data);
+          res.send(redisData);
+        } else {
+          console.log(id, "this is data of else block");
+          
+            const project = await GrapesJsProject.findOne( id );
 
-
-        client.get(id, async(err,data)=>{
-            if(err){
-                console.log(err);
-                res.status(500).send('Internal Server error');
+            console.log("Project from MongoDB:", project);
+            if (project) {
+                const projectData = await project.data;
+                console.log("ProjectData fetched");
+                await client.set(projectKey,JSON.stringify(projectData));
+                client.expire(projectKey,10);
+              res.json({ data: project.data });
+            } else {
+              res.status(404).json({ error: 'Project not found' });
             }
-            else if(data){
-                res.json(JSON.parse(data));
-            }
-            else{
-                try{
-                const project = await GrapesJsProject.findOne({ id });
-                console.log(project);
-                if (project) {
-                  res.json({ data: project.data });
-                } else {
-                  res.status(404).json({ error: 'Project not found' });
-                }
-            }
-            catch(error){
-                console.log("this is internal error ",error);
-            }
-            }
-        })
-        
-      } catch (error) {
-        res.status(500).json({ error: 'Internal Server Error' });
-      }
-})  
+          
+        }
+     
+  
+    } catch (error) {
+      console.error("Route error:", error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  });
 
 router.patch('/projects/:id',async(req,res)=>{
     try {
